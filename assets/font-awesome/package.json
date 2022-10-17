@@ -1,0 +1,15 @@
+{
+  "name": "fontawesome5-fullcss",
+  "version": "1.1.0",
+  "description": "FontAwesome 5 FullCSS Package (fa v5.1.0)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fontawesome",
+    "css"
+  ],
+  "author": "HeavyFlex",
+  "license": "ISC"
+}

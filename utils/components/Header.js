@@ -1,0 +1,34 @@
+export default function Header() {
+  return (
+    <header id="header" className="transparent-header floating-header">
+      <center>
+        <div id="header-wrap">
+          <div className="container">
+            <div className="header-row">
+              {/* <div id="logo"> */}
+
+              {/* </div> */}
+
+              <div id="primary-menu-trigger">
+                <svg className="svg-trigger" viewBox="0 0 100 100">
+                  <path d="m 30,33 h 40 c 3.722839,0 7.5,3.126468 7.5,8.578427 0,5.451959 -2.727029,8.421573 -7.5,8.421573 h -20"></path>
+                  <path d="m 30,50 h 40"></path>
+                  <path d="m 70,67 h -40 c 0,0 -7.5,-0.802118 -7.5,-8.365747 0,-7.563629 7.5,-8.634253 7.5,-8.634253 h 20"></path>
+                </svg>
+              </div>
+              <nav className="primary-menu"></nav>
+            </div>
+            <h3 className="multicolor-text">
+              <img
+                className="logo-img"
+                src="https://firebasestorage.googleapis.com/v0/b/mooncake-361822.appspot.com/o/Huawei-Logo.png?alt=media&token=94a3dfa9-9ebb-4997-a602-40854269b19c"
+              />
+              Huawei Lunch Food Ordering
+            </h3>
+          </div>
+        </div>
+      </center>
+      <div className="header-wrap-clone"></div>
+    </header>
+  );
+}

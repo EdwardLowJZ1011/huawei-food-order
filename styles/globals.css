@@ -1,0 +1,23 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.multicolor-text {
+  text-align: center;
+  font-size: 32px;
+  background: linear-gradient(to left,
+    #00467f,
+    #a5cc82
+  );
+  -webkit-background-clip: text;
+  color: transparent;
+}

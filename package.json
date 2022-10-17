@@ -1,0 +1,36 @@
+{
+  "name": "huawei-order-system",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "@mui/icons-material": "^5.6.1",
+    "@mui/material": "^5.6.1",
+    "axios": "^1.1.3",
+    "bootstrap": "^5.0.1",
+    "firebase": "^9.6.10",
+    "firebase-admin": "^10.0.2",
+    "font-awesome": "^4.7.0",
+    "mui-datatables": "^4.2.2",
+    "mui-datatables-next": "^3.0.1",
+    "next": "12.1.4",
+    "react": "18.0.0",
+    "react-datepicker": "^4.8.0",
+    "react-dom": "18.0.0",
+    "react-images-uploading": "^3.1.7",
+    "react-native-date-picker": "^4.2.5",
+    "react-table": "^7.7.0",
+    "uuidv4": "^6.2.13"
+  },
+  "devDependencies": {
+    "eslint": "8.13.0",
+    "eslint-config-next": "12.1.4"
+  }
+}
