@@ -75,8 +75,8 @@ export default function Blogs() {
     <div className={styles.container}>
       <PageTitle page={post} />
       <section id="content">
-        <div class="content-wrap">
-          <div class="container clearfix">
+        <div className="content-wrap">
+          <div className="container clearfix">
             <MUIDataTable
               title={"Recent 7 days"}
               data={orders && orders.data}
