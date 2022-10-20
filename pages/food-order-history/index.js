@@ -5,6 +5,17 @@ import React, { useState, useEffect } from "react";
 // import { getPosts } from "../api/getPosts";
 import { database, app, ref, onValue } from "../../firebase";
 
+export function GetSortOrder(prop) {    
+  return function(a, b) {    
+      if (a[prop] > b[prop]) {    
+          return 1;    
+      } else if (a[prop] < b[prop]) {    
+          return -1;    
+      }    
+      return 0;    
+  }    
+}  
+
 export default function Blogs() {
   const post = { title: "Food Order History" };
   const [orders, setOrders] = useState({ columns: [], data: [] });
@@ -44,6 +55,10 @@ export default function Blogs() {
             });
             tableContent.push(Object.values(dataObj));
           });
+          // tableContent.sort(GetSortOrder('Date'))
+          // tableContent.sort(GetSortOrder('OrderTime'))
+          delete tableContent['OrderTime'];
+          delete dataObj['OrderTime'];
           setOrders({ columns: Object.keys(dataObj), data: tableContent });
         }
       });
@@ -52,7 +67,7 @@ export default function Blogs() {
 
   const options = {
     filterType: "checkbox",
-    rowsPerPage: [5],
+    rowsPerPage: [50],
     rowsPerPageOptions: [1, 5, 10, 20, 50],
     jumpToPage: true,
     textLabels: {

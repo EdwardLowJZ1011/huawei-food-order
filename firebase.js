@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getDatabase, push,ref, set, onValue} from "firebase/database";
+import { getDatabase, push,ref, set, onValue, query, orderByChild } from "firebase/database";
 import { ref as sref, getStorage, uploadBytesResumable, getDownloadURL, listAll } from "firebase/storage";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -24,4 +24,4 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const storage = getStorage(app);
 
-export {app, database, set, push, ref, sref, storage, onValue, uploadBytesResumable, getDownloadURL};
+export {app, database, set, push, ref, sref, storage, onValue, uploadBytesResumable, getDownloadURL, query, orderByChild };

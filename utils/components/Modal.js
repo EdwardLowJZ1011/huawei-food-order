@@ -16,6 +16,7 @@ import {
 } from "../../firebase";
 import { v4 as uuid } from "uuid";
 import axios from "axios";
+import { NorthWest } from "@mui/icons-material";
 
 export default function Modal(props) {
   const [images, setImages] = React.useState([]);
@@ -26,6 +27,7 @@ export default function Modal(props) {
   const [remark, setRemark] = useState();
   const [TNG, setTNG] = useState();
   const [percent, setPercent] = useState(0);
+  const [nameExisted, setNamExisted] = useState(false);
 
   const onChange = (imageList, addUpdateIndex) => {
     // data for submit
@@ -77,31 +79,50 @@ export default function Modal(props) {
 
   const submitForm =  async (e) => {
     e.preventDefault();
+    const _confirm = true;
     const formatYmd = (date) => date.toLocaleString('en-CA').slice(0, 10);
     console.log(formatYmd(startDate))
     const data = {
       "Order": order ? order : '',
       "Remark": remark ? remark : '',
-      "TNG": TNG
+      "TNG": remark ? remark : '0',
+      "OrderTime": new Date().getTime()
     }
 
     const orderRef = ref(database, "food");
 
     // data[] = _Order
     const loc = "food/" + formatYmd(startDate) + '/'+ name;
-    
     const _orderRef = ref(database, loc);
-    set(_orderRef, data).then(() => {
-      console.log('Done')
-    }).catch(function(error){
-      console.log(error)
+    onValue(_orderRef, (snapshot) => {
+      const _data = snapshot.val();
+      if (_data){
+        setNamExisted(true);
+      }else{
+        setNamExisted(false);
+      }
     });
 
-    setName('');
-    setOrder('');
-    setRemark('');
-    setTNG('');
-    document.querySelector('#template-terms').checked = false;
+    if (nameExisted){
+      _confirm = confirm('Name Existed, are you sure to overwrite the previous record?')
+    }
+    console.log(_confirm)
+    
+    if (_confirm){
+      console.log(data)
+      set(_orderRef, data).then(() => {
+        console.log('Done')
+      }).catch(function(error){
+        console.log(error)
+      });
+  
+      setName('');
+      setOrder('');
+      setRemark('');
+      setTNG('');
+      document.querySelector('#template-terms').checked = false;
+    }
+    
   };
 
   return (

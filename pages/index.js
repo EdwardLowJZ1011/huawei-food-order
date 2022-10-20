@@ -10,8 +10,20 @@ import {
   database,
   ref,
   onValue,
+  query, orderByChild 
 } from "../firebase";
 import "react-datepicker/dist/react-datepicker.css";
+
+export function GetSortOrder(prop) {    
+  return function(a, b) {    
+      if (a[prop] > b[prop]) {    
+          return 1;    
+      } else if (a[prop] < b[prop]) {    
+          return -1;    
+      }    
+      return 0;    
+  }    
+}    
 
 export default function Home(props) {
   const post = { title: "Daily Lunch Order" };
@@ -40,17 +52,20 @@ export default function Home(props) {
             }else{
               dataObj[order] = data[person][order];
             }
-            
           });
           tableContent.push(Object.values(dataObj))
         });
+
+        tableContent.sort(GetSortOrder('OrderTime'))
+        delete tableContent['OrderTime'];
+        delete dataObj['OrderTime'];
         setOrders({ columns: Object.keys(dataObj), data: tableContent });
       }
     });
   }, [orders]);
 
   const options = {
-    rowsPerPage: [5],
+    rowsPerPage: [50],
     rowsPerPageOptions: [1, 5, 10, 20, 50],
     jumpToPage: true,
     textLabels: {
@@ -77,7 +92,7 @@ export default function Home(props) {
         <div className="content-wrap">
           <div className="container clearfix">
             <h5>
-              <Link href="/food-order-history">
+              <Link href="/food-order-history/">
                 <a className="history-link">
                   {" "}
                   &gt;&gt;&gt; Food Order History{" "}
