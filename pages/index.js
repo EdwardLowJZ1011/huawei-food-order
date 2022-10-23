@@ -6,33 +6,30 @@ import styles from "../styles/Home.module.css";
 import React, { useState, useEffect } from "react";
 import PageTitle from "../utils/components/PageTitle";
 import ModalHandler from "../utils/common/modalHandler";
-import {
-  database,
-  ref,
-  onValue,
-  query, orderByChild 
-} from "../firebase";
+import { database, ref, onValue, query, orderByChild } from "../firebase";
 import "react-datepicker/dist/react-datepicker.css";
 
-export function GetSortOrder(prop) {    
-  return function(a, b) {    
-      if (a[prop] > b[prop]) {    
-          return 1;    
-      } else if (a[prop] < b[prop]) {    
-          return -1;    
-      }    
-      return 0;    
-  }    
-}    
+export function GetSortOrder(prop) {
+  return function (a, b) {
+    if (a[prop] > b[prop]) {
+      return 1;
+    } else if (a[prop] < b[prop]) {
+      return -1;
+    }
+    return 0;
+  };
+}
 
 export default function Home(props) {
   const post = { title: "Daily Lunch Order" };
   const [orders, setOrders] = useState({ columns: [], data: [] });
+  const tableColumns = ["Name", "Order", "Remark", "TNG", "OrderTime"];
+
 
   useEffect(() => {
     const orderRef = "food";
     var tableContent = [];
-    const formatYmd = (date) => date.toLocaleString('en-CA').slice(0, 10);
+    const formatYmd = (date) => date.toLocaleString("en-CA").slice(0, 10);
     var date = formatYmd(new Date());
     const _orderRef = ref(database, orderRef + "/" + date);
     onValue(_orderRef, (snapshot) => {
@@ -41,27 +38,30 @@ export default function Home(props) {
       if (data) {
         const persons = Object.keys(data);
         persons.forEach((person) => {
-          dataObj['Name'] = person
-          const order_details = Object.keys(data[person])
-          order_details.forEach((order) =>{
-            if (order == 'TNG'){
-              if (data[person][order]=='1')
-                dataObj[order] = '✔️​ ';
-              else
-                dataObj[order] = '❌​ ';
-            }else{
-              dataObj[order] = data[person][order];
+          dataObj["Name"] = person;
+          const order_details = Object.keys(data[person]);
+          tableColumns.forEach((c) => {
+            if (c == "TNG") {
+              if (data[person][c] == "1") dataObj[c] = "✔️​ ";
+              else dataObj[c] = "❌​ ";
+            } else {
+              if (order_details.includes(c)) {
+                if (c == "OrderTime") {
+                  dataObj[c] = new Date(parseInt(data[person][c]))
+                    .toTimeString()
+                    .split(" ")[0];
+                } else dataObj[c] = data[person][c];
+              }
             }
           });
-          tableContent.push(Object.values(dataObj))
+          tableContent.push(Object.values(dataObj));
         });
-
-        tableContent.sort(GetSortOrder('OrderTime'))
-        delete tableContent['OrderTime'];
-        delete dataObj['OrderTime'];
-        setOrders({ columns: Object.keys(dataObj), data: tableContent });
       }
     });
+
+    
+    setOrders({ columns: tableColumns, data: tableContent });
+    
   }, [orders]);
 
   const options = {
@@ -85,7 +85,7 @@ export default function Home(props) {
   };
 
   return (
-    <div classNameName={styles.container}>
+    <div classNameN={styles.container}>
       <div></div>
       <PageTitle page={post} />
       <section id="content">

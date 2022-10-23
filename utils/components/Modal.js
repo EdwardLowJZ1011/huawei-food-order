@@ -31,7 +31,7 @@ export default function Modal(props) {
 
   const onChange = (imageList, addUpdateIndex) => {
     // data for submit
-    console.log(imageList, addUpdateIndex);
+    // console.log(imageList, addUpdateIndex);
     setImages(imageList);
   };
 
@@ -48,7 +48,7 @@ export default function Modal(props) {
   const uploadMenu = () => {
     const unique_id = uuid();
     const small_id = unique_id.slice(0, 8);
-    console.log(images[0]);
+    // console.log(images[0]);
     const menuid = small_id + images[0].file.name;
     const storageRef = sref(storage, `food/${menuid}`);
     const uploadTask = uploadBytesResumable(storageRef, images[0].file);
@@ -81,11 +81,11 @@ export default function Modal(props) {
     e.preventDefault();
     const _confirm = true;
     const formatYmd = (date) => date.toLocaleString('en-CA').slice(0, 10);
-    console.log(formatYmd(startDate))
+    // console.log(formatYmd(startDate))
     const data = {
       "Order": order ? order : '',
       "Remark": remark ? remark : '',
-      "TNG": remark ? remark : '0',
+      "TNG": TNG ? TNG : '0',
       "OrderTime": new Date().getTime()
     }
 
@@ -96,6 +96,7 @@ export default function Modal(props) {
     const _orderRef = ref(database, loc);
     onValue(_orderRef, (snapshot) => {
       const _data = snapshot.val();
+      console.log(data)
       if (_data){
         setNamExisted(true);
       }else{
@@ -106,10 +107,9 @@ export default function Modal(props) {
     if (nameExisted){
       _confirm = confirm('Name Existed, are you sure to overwrite the previous record?')
     }
-    console.log(_confirm)
     
     if (_confirm){
-      console.log(data)
+      // console.log(data)
       set(_orderRef, data).then(() => {
         console.log('Done')
       }).catch(function(error){
@@ -121,6 +121,7 @@ export default function Modal(props) {
       setRemark('');
       setTNG('');
       document.querySelector('#template-terms').checked = false;
+      setNamExisted(false);
     }
     
   };

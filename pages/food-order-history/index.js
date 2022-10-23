@@ -5,25 +5,26 @@ import React, { useState, useEffect } from "react";
 // import { getPosts } from "../api/getPosts";
 import { database, app, ref, onValue } from "../../firebase";
 
-export function GetSortOrder(prop) {    
-  return function(a, b) {    
-      if (a[prop] > b[prop]) {    
-          return 1;    
-      } else if (a[prop] < b[prop]) {    
-          return -1;    
-      }    
-      return 0;    
-  }    
-}  
+export function GetSortOrder(prop) {
+  return function (a, b) {
+    if (a[prop] > b[prop]) {
+      return 1;
+    } else if (a[prop] < b[prop]) {
+      return -1;
+    }
+    return 0;
+  };
+}
 
 export default function Blogs() {
   const post = { title: "Food Order History" };
   const [orders, setOrders] = useState({ columns: [], data: [] });
+  const tableColumns = ["Date", "Name", "Order", "Remark", "TNG", "OrderTime"];
 
   useEffect(() => {
     const orderRef = "food";
     var tableContent = [];
-    const formatYmd = (date) => date.toLocaleString('en-CA').slice(0, 10);
+    const formatYmd = (date) => date.toLocaleString("en-CA").slice(0, 10);
     var recent_7_days = [];
 
     for (var i = 6; i >= 0; i--) {
@@ -35,34 +36,36 @@ export default function Blogs() {
     recent_7_days.forEach((date) => {
       const dataObj = {};
       const _orderRef = ref(database, orderRef + "/" + date);
-      dataObj['Date'] = date;
 
       onValue(_orderRef, (snapshot) => {
         const data = snapshot.val();
-
         if (data) {
           const persons = Object.keys(data);
           persons.forEach((person) => {
+            dataObj["Date"] = date;
             dataObj["Name"] = person;
             const order_details = Object.keys(data[person]);
-            order_details.forEach((order) => {
-              if (order == "TNG") {
-                if (data[person][order] == "1") dataObj[order] = "✔️​ ";
-                else dataObj[order] = "❌​ ";
+            tableColumns.forEach((c) => {
+              if (c == "TNG") {
+                if (data[person][c] == "1") dataObj[c] = "✔️​ ";
+                else dataObj[c] = "❌​ ";
               } else {
-                dataObj[order] = data[person][order];
+                if (order_details.includes(c)) {
+                  if (c == "OrderTime") {
+                    dataObj[c] = new Date(parseInt(data[person][c]))
+                      .toTimeString()
+                      .split(" ")[0];
+                  } else dataObj[c] = data[person][c];
+                }
               }
             });
             tableContent.push(Object.values(dataObj));
           });
-          // tableContent.sort(GetSortOrder('Date'))
-          // tableContent.sort(GetSortOrder('OrderTime'))
-          delete tableContent['OrderTime'];
-          delete dataObj['OrderTime'];
-          setOrders({ columns: Object.keys(dataObj), data: tableContent });
         }
       });
     });
+
+    setOrders({ columns: tableColumns, data: tableContent });
   }, [orders]);
 
   const options = {
