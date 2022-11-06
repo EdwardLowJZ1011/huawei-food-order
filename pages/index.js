@@ -92,7 +92,7 @@ export default function Home(props) {
         <div className="content-wrap">
           <div className="container clearfix">
             <h5>
-              <Link href="/food-order-history/">
+              <Link href="/food-order-history">
                 <a className="history-link">
                   {" "}
                   &gt;&gt;&gt; Food Order History{" "}
@@ -103,8 +103,8 @@ export default function Home(props) {
             <div className="image-container">
               <h3>Food Menu</h3>
               <img
-                height={300}
-                width={300}
+                height={460}
+                width={460}
                 src={props.menuImage.length == 0 ? "" : props.menuImage[0]}
                 onClick={(e) => {
                   ModalHandler("enlargeMenu");
