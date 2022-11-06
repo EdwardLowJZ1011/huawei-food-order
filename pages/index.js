@@ -103,8 +103,8 @@ export default function Home(props) {
             <div className="image-container">
               <h3>Food Menu</h3>
               <img
-                height={460}
-                width={460}
+                height={520}
+                width={520}
                 src={props.menuImage.length == 0 ? "" : props.menuImage[0]}
                 onClick={(e) => {
                   ModalHandler("enlargeMenu");
