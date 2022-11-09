@@ -60,7 +60,7 @@ export default function Modal(props) {
     let time = d.getTime();
     const menuRef = ref(database, `cafe/${props.cafe}`);
 
-    set(menuRef, { filename: filename, uploadtime: time }).then(() => {
+    set(menuRef, { filename: filename, uploadtime: time , paymentImage: 'IMG-20221108-WA0001.jpg'}).then(() => {
       alert("upload successfully");
     });
   };
