@@ -2,7 +2,7 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import React, { useState, useEffect } from "react";
 import PageTitle from "../utils/components/PageTitle";
-import Cafe from "../utils/components/cafe";
+import Cafe from "../utils/components/Cafe";
 
 export function GetSortOrder(prop) {
   return function (a, b) {
