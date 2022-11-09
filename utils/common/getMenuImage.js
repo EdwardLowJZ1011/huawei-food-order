@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { listAll } from "firebase/storage";
 import {
   app,
@@ -13,32 +13,25 @@ import {
   getDownloadURL,
 } from "../../firebase";
 
-export function getMenuImageURL(){
-  
-  const [menuImage, setmenuImage] = useState([]);
+const getMenuImageURL = (menuImage, setMenuImage, cafe, name) => {
 
-  const getMenuImage = () => {
-    const menuRef = ref(database, "menu");
-    onValue(menuRef, (snapshot) => {
-      const data = snapshot.val();
-      const filename = data["filename"];
-
-      const listRef = sref(storage, `food`);
-      listAll(listRef).then((res) => {
-        res.items.forEach((item) => {
-          if (item.name == filename) {
-            getDownloadURL(item).then((url) => {
-              setmenuImage([url]);
-            });
-          }
-        });
+  const menuRef = ref(database, `cafe/${cafe}`);
+  onValue(menuRef, (snapshot) => {
+    const data = snapshot.val();
+    const filename = data[name];
+    const listRef = sref(storage, `food`);
+    listAll(listRef).then((res) => {
+      res.items.forEach((item) => {
+        if (item.name == filename) {
+          getDownloadURL(item).then((url) => {
+            setMenuImage([url]);
+          });
+        }
       });
     });
-  };
-
-  useEffect(() => {
-    getMenuImage();
-  }, []);
+  });
 
   return menuImage;
 };
+
+export default getMenuImageURL;

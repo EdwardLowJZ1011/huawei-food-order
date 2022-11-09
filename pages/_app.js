@@ -9,17 +9,14 @@ import "../styles/magnific-popup.css";
 import "../styles/custom.css";
 import Header from "../utils/components/Header";
 import Footer from "../utils/components/Footer";
-import Modal from "../utils/components/Modal";
-import { getMenuImageURL } from "../utils/common/getMenuImage";
 
 
 function MyApp({ Component, pageProps }) {
-  var menuImage = getMenuImageURL();
+
   return (
     <>
-      <Modal menuImage={menuImage}/>
       <Header />
-      <Component {...pageProps} menuImage={menuImage}/>
+      <Component {...pageProps}/>
       <Footer />
     </>
   );

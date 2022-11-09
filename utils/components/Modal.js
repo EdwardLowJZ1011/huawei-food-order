@@ -27,6 +27,7 @@ export default function Modal(props) {
   const [remark, setRemark] = useState();
   const [TNG, setTNG] = useState();
   const [percent, setPercent] = useState(0);
+  const [payAmount, setPayAmount] = useState(0);
   const [nameExisted, setNamExisted] = useState(false);
 
   const onChange = (imageList, addUpdateIndex) => {
@@ -35,10 +36,29 @@ export default function Modal(props) {
     setImages(imageList);
   };
 
+  const cal_Order = (orders) =>{
+      var veg = 0
+      var meal = 0
+      var amount = 0
+      for (var i = 0; i <= orders.length; i++){
+          if (parseInt(orders.charAt(i))){
+              var order = parseInt(orders.charAt(i))
+              veg += order >= 1 && order <= 3 ? 1 : 0
+              meal += order >= 4 && order <= 6 ? 1 : 0
+          }
+      }
+
+      amount = veg == 1 && meal == 1 ? 8 : veg == 2 && meal == 1 ? 9 : 0
+      
+      setPayAmount(amount)
+      setOrder(orders)
+
+  }
+
   const recordLatestUploadMenu = (filename) => {
     const d = new Date();
     let time = d.getTime();
-    const menuRef = ref(database, "menu");
+    const menuRef = ref(database, `cafe/${props.cafe}`);
 
     set(menuRef, { filename: filename, uploadtime: time }).then(() => {
       alert("upload successfully");
@@ -74,25 +94,28 @@ export default function Modal(props) {
     );
   };
 
-
-
-
   const submitForm =  async (e) => {
     e.preventDefault();
     const _confirm = true;
     const formatYmd = (date) => date.toLocaleString('en-CA').slice(0, 10);
     // console.log(formatYmd(startDate))
-    const data = {
+    const data = props.cafe == 'Khasiat' ?{
       "Order": order ? order : '',
       "Remark": remark ? remark : '',
       "TNG": TNG ? TNG : '0',
       "OrderTime": new Date().getTime()
+    }: {
+      "Order": order ? order : '',
+      "Remark": remark ? remark : '',
+      "TNG": TNG ? TNG : '0',
+      "OrderTime": new Date().getTime(),
+      "Amount": payAmount
     }
 
     const orderRef = ref(database, "food");
 
     // data[] = _Order
-    const loc = "food/" + formatYmd(startDate) + '/'+ name;
+    const loc = `food/${props.cafe}/` + formatYmd(startDate) + '/'+ name;
     const _orderRef = ref(database, loc);
     onValue(_orderRef, (snapshot) => {
       const _data = snapshot.val();
@@ -120,6 +143,8 @@ export default function Modal(props) {
       setOrder('');
       setRemark('');
       setTNG('');
+      setPayAmount(0);
+
       document.querySelector('#template-terms').checked = false;
       setNamExisted(false);
     }
@@ -128,6 +153,21 @@ export default function Modal(props) {
 
   return (
     <>
+      <div id="paymentModal" className="payment-image-modal">
+        <span
+          className="close"
+          onClick={(e) => ModalHandler('paymentModal')}
+        >
+          &times;
+        </span>
+        <img
+          className="payment-image-modal-content"
+          src={props.paymentImage.length == 0 ? "" : props.paymentImage[0]}
+          alt={'TNG Payment'}
+        />
+        <div id="caption"></div>
+      </div>
+
       <div id="enlargeMenu" className="menu-image-modal">
         <span
           className="close"
@@ -275,7 +315,7 @@ export default function Modal(props) {
                       // name="template-order-food"
                       className="form-control input-sm required"
                       value={order}
-                      onChange={(e) => setOrder(e.target.value)}
+                      onChange={(e) => {props.cafe == 'LaLa'? cal_Order(e.target.value) : setOrder(e.target.value)}}
                       required
                     />
                   </div>
@@ -292,6 +332,13 @@ export default function Modal(props) {
                       onChange={(e) => setRemark(e.target.value)}
                     />
                   </div>
+                  {props.cafe == 'LaLa' && (<>
+                    <div className="col-12 form-group mb-4">
+                      <div className="contact-checkbox">
+                        <font>Pay Amount: </font><b>RM {payAmount}</b> <i><font style={{'font-size': '12px'}}>(estimated)</font></i>
+                      </div>
+                    </div>
+                  </>)}
                   <div className="col-12 form-group mb-4">
                     <div className="contact-checkbox">
                       <input
@@ -317,9 +364,10 @@ export default function Modal(props) {
                       type="submit"
                       className="button button-rounded w-100 nott ls0 m-0"
                       id="template-contactform-submit"
+                      onClick={(e)=>ModalHandler("paymentModal")}
                       // name="template-contactform-submit"
                     >
-                      Send
+                      Place Order
                     </button>
                   </div>
                 </form>

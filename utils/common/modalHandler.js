@@ -1,3 +1,4 @@
+
 const ModalHandler = (elem) => {
     const elm = document.getElementById(elem).style.display;
     elm = elm == "block" ? "none" : "block";
