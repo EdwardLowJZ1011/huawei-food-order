@@ -79,7 +79,7 @@ export default function Cafe(props) {
     getOrderDetail()
     getMenuImageURL(menuImage, setmenuImage, cafe, 'filename');
     getMenuImageURL(paymentImage, setPaymentImage, cafe, 'paymentImage');
-  }, [cafe, orderSqc]);
+  }, [cafe]);
 
   const renderTabs = () => {
     return (
