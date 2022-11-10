@@ -10,11 +10,11 @@ import Modal from "./Modal";
 
 export default function Cafe(props) {
   const [orders, setOrders] = useState({ columns: [], data: [] });
+  const [orderSqc, setOrderSqc] = useState([]);
   const [cafe, SetCafe] = useState("LaLa");
   const [menuImage, setmenuImage] = useState([]);
   const [paymentImage, setPaymentImage] = useState([]);
-  const tableColumns = cafe == 'Khasiat' ? ["Name", "Order", "Remark", "TNG", "OrderTime"] 
-    : ["Name", "Order", "Remark", "Amount","TNG", "OrderTime"] ;
+  const tableColumns = cafe == 'LaLa' ? ["Name", "Order", "Remark", "Amount","TNG", "OrderTime"] : ["Name", "Order", "Remark", "TNG", "OrderTime"] ;
   
     const bblSort = (arr)=>{
       var orderTimeIndex = tableColumns.indexOf('OrderTime')
@@ -22,7 +22,6 @@ export default function Cafe(props) {
         for(var j = 0; j < ( arr.length - i -1 ); j++){
           if(arr[j][orderTimeIndex] > arr[j+1][orderTimeIndex]){
             var temp = arr[j]
-
             arr[j] = arr[j + 1]
             arr[j+1] = temp
           }
@@ -32,8 +31,9 @@ export default function Cafe(props) {
       for(var i = 0; i < arr.length; i++)
         arr[i][orderTimeIndex] = new Date(arr[i][orderTimeIndex]).toTimeString().split(" ")[0];
 
+      setOrderSqc(arr)
+
       console.log(arr)
-      return arr
 
      }
 
@@ -70,16 +70,17 @@ export default function Cafe(props) {
         });
       }
     });
-    tableContent = bblSort(tableContent)
-    setOrders({ columns: tableColumns, data: tableContent });
+
+    bblSort(tableContent)
+    setOrders({ columns: tableColumns, data: orderSqc });
     
   }
 
   useEffect(() => {
+    getOrderDetail()
     getMenuImageURL(menuImage, setmenuImage, cafe, 'filename');
     getMenuImageURL(paymentImage, setPaymentImage, cafe, 'paymentImage');
-    getOrderDetail()
-  }, [cafe]);
+  }, [cafe, orderSqc]);
 
   const renderTabs = () => {
     return (
