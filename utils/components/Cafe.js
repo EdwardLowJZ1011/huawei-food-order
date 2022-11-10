@@ -16,7 +16,7 @@ export default function Cafe(props) {
   const [paymentImage, setPaymentImage] = useState([]);
   const tableColumns = cafe == 'LaLa' ? ["Name", "Order", "Remark", "Amount","TNG", "OrderTime"] : ["Name", "Order", "Remark", "TNG", "OrderTime"] ;
   
-    const bblSort = (arr)=>{
+  const bblSort = (arr)=>{
       var orderTimeIndex = tableColumns.indexOf('OrderTime')
       for(var i = 0; i < arr.length; i++){
         for(var j = 0; j < ( arr.length - i -1 ); j++){
@@ -32,8 +32,6 @@ export default function Cafe(props) {
         arr[i][orderTimeIndex] = new Date(arr[i][orderTimeIndex]).toTimeString().split(" ")[0];
 
       setOrderSqc(arr)
-
-      console.log(arr)
 
      }
 
@@ -72,6 +70,7 @@ export default function Cafe(props) {
     });
 
     bblSort(tableContent)
+
     setOrders({ columns: tableColumns, data: orderSqc });
     
   }
@@ -84,7 +83,7 @@ export default function Cafe(props) {
 
   const renderTabs = () => {
     return (
-      <Tabs defaultActiveKey={1}
+      <Tabs defaultActiveKey={cafe}
         id="controlled-tab-example"
         className="mb-3"
         activeKey={cafe}
@@ -151,6 +150,7 @@ export default function Cafe(props) {
           </div>
         </div>
         <br />
+        <h3>Total Orders: {orderSqc.length}</h3>
         <MUIDataTable
           title={"Today's Order List"}
           data={orders && orders.data}
