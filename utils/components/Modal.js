@@ -138,6 +138,7 @@ export default function Modal(props) {
 
     if (orderVal >= 1){
       if (_confirm){
+        ModalHandler("paymentModal")
         // console.log(data)
         set(_orderRef, data).then(() => {
           console.log('Done')
@@ -375,7 +376,6 @@ export default function Modal(props) {
                       type="submit"
                       className="button button-rounded w-100 nott ls0 m-0"
                       id="template-contactform-submit"
-                      onClick={(e)=>ModalHandler("paymentModal")}
                       // name="template-contactform-submit"
                     >
                       Place Order
