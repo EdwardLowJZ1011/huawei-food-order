@@ -16,7 +16,7 @@ import {
 } from "../../firebase";
 import { v4 as uuid } from "uuid";
 import axios from "axios";
-import { NorthWest } from "@mui/icons-material";
+import { Alarm, NorthWest } from "@mui/icons-material";
 
 export default function Modal(props) {
   const [images, setImages] = React.useState([]);
@@ -24,6 +24,7 @@ export default function Modal(props) {
   const [startDate, setStartDate] = useState(new Date());
   const [name, setName] = useState();
   const [order, setOrder] = useState();
+  const [orderVal, setorderVal] = useState(0);
   const [remark, setRemark] = useState();
   const [TNG, setTNG] = useState();
   const [percent, setPercent] = useState(0);
@@ -40,17 +41,21 @@ export default function Modal(props) {
       var veg = 0
       var meal = 0
       var amount = 0
+      
       for (var i = 0; i <= orders.length; i++){
           if (parseInt(orders.charAt(i))){
               var order = parseInt(orders.charAt(i))
-              veg += order >= 1 && order <= 3 ? 1 : 0
-              meal += order >= 4 && order <= 6 ? 1 : 0
+              meal += order >= 1 && order <= 3 ? 1 : 0
+              veg += order >= 4 && order <= 6 ? 1 : 0
+              setorderVal(orderVal + 1)
           }
       }
 
-      amount = veg == 1 && meal == 1 ? 8 : veg == 2 && meal == 1 ? 9 : 0
+      if (props.cafe == 'LaLa'){
+        amount = veg == 1 && meal == 1 ? 8 : veg == 2 && meal == 1 ? 9 : 0
+        setPayAmount(amount)
+      }
       
-      setPayAmount(amount)
       setOrder(orders)
 
   }
@@ -130,24 +135,30 @@ export default function Modal(props) {
     if (nameExisted){
       _confirm = confirm('Name Existed, are you sure to overwrite the previous record?')
     }
-    
-    if (_confirm){
-      // console.log(data)
-      set(_orderRef, data).then(() => {
-        console.log('Done')
-      }).catch(function(error){
-        console.log(error)
-      });
-  
-      setName('');
-      setOrder('');
-      setRemark('');
-      setTNG('');
-      setPayAmount(0);
 
-      document.querySelector('#template-terms').checked = false;
-      setNamExisted(false);
+    if (orderVal >= 1){
+      if (_confirm){
+        // console.log(data)
+        set(_orderRef, data).then(() => {
+          console.log('Done')
+        }).catch(function(error){
+          console.log(error)
+        });
+    
+        setName('');
+        setOrder('');
+        setRemark('');
+        setTNG('');
+        setPayAmount(0);
+  
+        document.querySelector('#template-terms').checked = false;
+        setNamExisted(false);
+      }
+    }else{
+      alert('Invalid Order')
+      setorderVal(0)
     }
+    
     
   };
 
@@ -315,7 +326,7 @@ export default function Modal(props) {
                       // name="template-order-food"
                       className="form-control input-sm required"
                       value={order}
-                      onChange={(e) => {props.cafe == 'LaLa'? cal_Order(e.target.value) : setOrder(e.target.value)}}
+                      onChange={(e) =>  cal_Order(e.target.value)}
                       required
                     />
                   </div>

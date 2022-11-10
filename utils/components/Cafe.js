@@ -16,6 +16,27 @@ export default function Cafe(props) {
   const tableColumns = cafe == 'Khasiat' ? ["Name", "Order", "Remark", "TNG", "OrderTime"] 
     : ["Name", "Order", "Remark", "Amount","TNG", "OrderTime"] ;
   
+    const bblSort = (arr)=>{
+      var orderTimeIndex = tableColumns.indexOf('OrderTime')
+      for(var i = 0; i < arr.length; i++){
+        for(var j = 0; j < ( arr.length - i -1 ); j++){
+          if(arr[j][orderTimeIndex] > arr[j+1][orderTimeIndex]){
+            var temp = arr[j]
+
+            arr[j] = arr[j + 1]
+            arr[j+1] = temp
+          }
+        }
+      }
+
+      for(var i = 0; i < arr.length; i++)
+        arr[i][orderTimeIndex] = new Date(arr[i][orderTimeIndex]).toTimeString().split(" ")[0];
+
+      console.log(arr)
+      return arr
+
+     }
+
   const getOrderDetail = () => { 
     const orderRef = `food/${cafe}`;
     var tableContent = [];
@@ -40,9 +61,7 @@ export default function Cafe(props) {
             } else {
               if (order_details.includes(c)) {
                 if (c == "OrderTime") {
-                  dataObj[c] = new Date(parseInt(data[person][c]))
-                    .toTimeString()
-                    .split(" ")[0];
+                  dataObj[c] = parseInt(data[person][c])
                 } else dataObj[c] = data[person][c];
               }
             }
@@ -51,7 +70,7 @@ export default function Cafe(props) {
         });
       }
     });
-
+    tableContent = bblSort(tableContent)
     setOrders({ columns: tableColumns, data: tableContent });
     
   }
