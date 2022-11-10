@@ -10,7 +10,7 @@ import Modal from "./Modal";
 
 export default function Cafe(props) {
   const [orders, setOrders] = useState({ columns: [], data: [] });
-  const [cafe, SetCafe] = useState("Khasiat");
+  const [cafe, SetCafe] = useState("LaLa");
   const [menuImage, setmenuImage] = useState([]);
   const [paymentImage, setPaymentImage] = useState([]);
   const tableColumns = cafe == 'Khasiat' ? ["Name", "Order", "Remark", "TNG", "OrderTime"] 
@@ -89,10 +89,11 @@ export default function Cafe(props) {
         activeKey={cafe}
         onSelect={(k) => SetCafe(k)}
       >
-        <Tab eventKey='Khasiat' title="Khasiat">
-        </Tab>
         <Tab eventKey="LaLa" title="LaLa Restaurant">
         </Tab>
+        <Tab eventKey='Khasiat' title="Khasiat">
+        </Tab>
+        
       </Tabs>
     );
   };
