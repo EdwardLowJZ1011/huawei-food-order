@@ -10,13 +10,13 @@ import Modal from "./Modal";
 
 export default function Cafe(props) {
   const [orders, setOrders] = useState({ columns: [], data: [] });
-  const [orderSqc, setOrderSqc] = useState([]);
   const [cafe, SetCafe] = useState("LaLa");
   const [menuImage, setmenuImage] = useState([]);
   const [paymentImage, setPaymentImage] = useState([]);
+  
   const tableColumns = cafe == 'LaLa' ? ["Name", "Order", "Remark", "Amount","TNG", "OrderTime"] : ["Name", "Order", "Remark", "TNG", "OrderTime"] ;
   
-  const bblSort = (arr)=>{
+  function bblSort(arr){
       var orderTimeIndex = tableColumns.indexOf('OrderTime')
       for(var i = 0; i < arr.length; i++){
         for(var j = 0; j < ( arr.length - i -1 ); j++){
@@ -31,20 +31,19 @@ export default function Cafe(props) {
       for(var i = 0; i < arr.length; i++)
         arr[i][orderTimeIndex] = new Date(arr[i][orderTimeIndex]).toTimeString().split(" ")[0];
 
-      setOrderSqc(arr)
-
+      return arr
      }
 
   const getOrderDetail = () => { 
+    const orderSqc = []
     const orderRef = `food/${cafe}`;
-    var tableContent = [];
     const formatYmd = (date) => date.toLocaleString("en-CA").slice(0, 10);
     var date = formatYmd(new Date());
     const _orderRef = ref(database, orderRef + "/" + date);
-
     onValue(_orderRef, (snapshot) => {
       const data = snapshot.val();
       const dataObj = {};
+
       if (data) {
         const persons = Object.keys(data);
         persons.forEach((person) => {
@@ -64,18 +63,17 @@ export default function Cafe(props) {
               }
             }
           });
-          tableContent.push(Object.values(dataObj));
+          orderSqc.push(Object.values(dataObj));
         });
       }
     });
-
-    bblSort(tableContent)
-
+    orderSqc = bblSort(orderSqc)
     setOrders({ columns: tableColumns, data: orderSqc });
     
   }
 
   useEffect(() => {
+
     getOrderDetail()
     getMenuImageURL(menuImage, setmenuImage, cafe, 'filename');
     getMenuImageURL(paymentImage, setPaymentImage, cafe, 'paymentImage');
@@ -150,7 +148,7 @@ export default function Cafe(props) {
           </div>
         </div>
         <br />
-        <h3>Total Orders: {orderSqc.length}</h3>
+        <h3>Total Orders: {orders.data.length}</h3>
         <MUIDataTable
           title={"Today's Order List"}
           data={orders && orders.data}
