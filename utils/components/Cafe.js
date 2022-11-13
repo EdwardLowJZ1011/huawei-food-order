@@ -29,10 +29,12 @@ export default function Cafe(props) {
       }
 
       for(var i = 0; i < arr.length; i++)
-        arr[i][orderTimeIndex] = new Date(arr[i][orderTimeIndex]).toTimeString().split(" ")[0];
+        arr[i][orderTimeIndex] = 
+        new Date(arr[i][orderTimeIndex]).toTimeString().split(" ")[0];
 
       return arr
-     }
+  
+  }
 
   const getOrderDetail = () => { 
     const orderSqc = []
@@ -40,6 +42,7 @@ export default function Cafe(props) {
     const formatYmd = (date) => date.toLocaleString("en-CA").slice(0, 10);
     var date = formatYmd(new Date());
     const _orderRef = ref(database, orderRef + "/" + date);
+    
     onValue(_orderRef, (snapshot) => {
       const data = snapshot.val();
       const dataObj = {};
@@ -65,15 +68,16 @@ export default function Cafe(props) {
           });
           orderSqc.push(Object.values(dataObj));
         });
+        orderSqc = bblSort(orderSqc)
       }
     });
-    orderSqc = bblSort(orderSqc)
+    // orderSqc = await bblSort(orderSqc)
+    // console.log('orderSqc', orderSqc.length)
     setOrders({ columns: tableColumns, data: orderSqc });
     
   }
 
   useEffect(() => {
-
     getOrderDetail()
     getMenuImageURL(menuImage, setmenuImage, cafe, 'filename');
     getMenuImageURL(paymentImage, setPaymentImage, cafe, 'paymentImage');
