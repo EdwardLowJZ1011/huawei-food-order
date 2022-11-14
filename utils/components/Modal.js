@@ -124,6 +124,7 @@ export default function Modal(props) {
       props.cafe == "Khasiat"
         ? {
             Order: order ? order : "",
+            Level: level.value ? level.value : "",
             Remark: remark ? remark : "",
             TNG: TNG ? TNG : "0",
             OrderTime: new Date().getTime(),
@@ -357,7 +358,6 @@ export default function Modal(props) {
                       className="basic-single"
                       classNamePrefix="select"
                       defaultValue={levelOptions[levelOptions.length - 2]}
-                      value={levelOptions[levelOptions.length - 2]}
                       isLoading={true}
                       isClearable={true}
                       isSearchable={true}
