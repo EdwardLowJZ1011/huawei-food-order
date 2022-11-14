@@ -14,7 +14,7 @@ export default function Cafe(props) {
   const [menuImage, setmenuImage] = useState([]);
   const [paymentImage, setPaymentImage] = useState([]);
   
-  const tableColumns = cafe == 'LaLa' ? ["Name", "Order","Level", "Remark", "Amount","TNG", "OrderTime"] : ["Name", "Order", "Remark", "TNG", "OrderTime"] ;
+  const tableColumns = cafe == 'LaLa' ? ["Name", "Order","Level", "Remark", "Amount","TNG", "OrderTime"] : ["Name", "Order", "Level", "Remark", "TNG", "OrderTime"] ;
   
   function bblSort(arr){
       var orderTimeIndex = tableColumns.indexOf('OrderTime')
