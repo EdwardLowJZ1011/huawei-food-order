@@ -14,7 +14,7 @@ export default function Cafe(props) {
   const [menuImage, setmenuImage] = useState([]);
   const [paymentImage, setPaymentImage] = useState([]);
   
-  const tableColumns = cafe == 'LaLa' ? ["Name", "Order", "Remark", "Amount","TNG", "OrderTime"] : ["Name", "Order", "Remark", "TNG", "OrderTime"] ;
+  const tableColumns = cafe == 'LaLa' ? ["Name", "Order","Level", "Remark", "Amount","TNG", "OrderTime"] : ["Name", "Order", "Remark", "TNG", "OrderTime"] ;
   
   function bblSort(arr){
       var orderTimeIndex = tableColumns.indexOf('OrderTime')
@@ -50,8 +50,9 @@ export default function Cafe(props) {
       if (data) {
         const persons = Object.keys(data);
         persons.forEach((person) => {
+          const dataObj = {};
           dataObj["Name"] = person;
-          const order_details = Object.keys(data[person]);
+          var order_details = Object.keys(data[person]);
           tableColumns.forEach((c) => {
             if (c == "TNG") {
               if (data[person][c] == "1") dataObj[c] = "✔️​ ";
@@ -62,7 +63,12 @@ export default function Cafe(props) {
               if (order_details.includes(c)) {
                 if (c == "OrderTime") {
                   dataObj[c] = parseInt(data[person][c])
-                } else dataObj[c] = data[person][c];
+                } else if (c == 'Level'){
+                  dataObj[c] = "L"+data[person][c]
+                }
+                else dataObj[c] = data[person][c];
+              }else if(!Object.keys(dataObj).includes(c)){
+                  dataObj[c] = '';
               }
             }
           });

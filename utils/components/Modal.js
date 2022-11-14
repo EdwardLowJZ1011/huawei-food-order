@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import ImageUploading from "react-images-uploading";
 import ModalHandler from "../common/modalHandler";
+import Select from "react-select";
+
 import {
   app,
   database,
@@ -19,11 +21,21 @@ import axios from "axios";
 import { Alarm, NorthWest } from "@mui/icons-material";
 
 export default function Modal(props) {
+  const levelOptions = [
+    { value: "38", label: "L38" },
+    { value: "39", label: "L39" },
+    { value: "40", label: "L40" },
+    { value: "41", label: "L41" },
+    { value: "42", label: "L42" },
+    { value: "43", label: "L43" },
+    { value: "45", label: "L45" },
+  ];
   const [images, setImages] = React.useState([]);
   const maxNumber = 1;
   const [startDate, setStartDate] = useState(new Date());
   const [name, setName] = useState();
   const [order, setOrder] = useState();
+  const [level, setLevel] = useState(levelOptions[levelOptions.length - 2]);
   const [orderVal, setorderVal] = useState(0);
   const [remark, setRemark] = useState();
   const [TNG, setTNG] = useState();
@@ -37,35 +49,38 @@ export default function Modal(props) {
     setImages(imageList);
   };
 
-  const cal_Order = (orders) =>{
-      var veg = 0
-      var meal = 0
-      var amount = 0
-      
-      for (var i = 0; i <= orders.length; i++){
-          if (parseInt(orders.charAt(i))){
-              var order = parseInt(orders.charAt(i))
-              meal += order >= 1 && order <= 3 ? 1 : 0
-              veg += order >= 4 && order <= 6 ? 1 : 0
-              setorderVal(orderVal + 1)
-          }
-      }
+  const cal_Order = (orders) => {
+    var veg = 0;
+    var meal = 0;
+    var amount = 0;
 
-      if (props.cafe == 'LaLa'){
-        amount = veg == 1 && meal == 1 ? 8 : veg == 2 && meal == 1 ? 9 : 0
-        setPayAmount(amount)
+    for (var i = 0; i <= orders.length; i++) {
+      if (parseInt(orders.charAt(i))) {
+        var order = parseInt(orders.charAt(i));
+        meal += order >= 1 && order <= 3 ? 1 : 0;
+        veg += order >= 4 && order <= 6 ? 1 : 0;
+        setorderVal(orderVal + 1);
       }
-      
-      setOrder(orders)
+    }
 
-  }
+    if (props.cafe == "LaLa") {
+      amount = veg == 1 && meal == 1 ? 8 : veg == 2 && meal == 1 ? 9 : 0;
+      setPayAmount(amount);
+    }
+
+    setOrder(orders);
+  };
 
   const recordLatestUploadMenu = (filename) => {
     const d = new Date();
     let time = d.getTime();
     const menuRef = ref(database, `cafe/${props.cafe}`);
 
-    set(menuRef, { filename: filename, uploadtime: time , paymentImage: 'IMG-20221108-WA0001.jpg'}).then(() => {
+    set(menuRef, {
+      filename: filename,
+      uploadtime: time,
+      paymentImage: "IMG-20221108-WA0001.jpg",
+    }).then(() => {
       alert("upload successfully");
     });
   };
@@ -99,98 +114,100 @@ export default function Modal(props) {
     );
   };
 
-  const submitForm =  async (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
     const _confirm = true;
-    const formatYmd = (date) => date.toLocaleString('en-CA').slice(0, 10);
+    const formatYmd = (date) => date.toLocaleString("en-CA").slice(0, 10);
     // console.log(formatYmd(startDate))
-    const data = props.cafe == 'Khasiat' ?{
-      "Order": order ? order : '',
-      "Remark": remark ? remark : '',
-      "TNG": TNG ? TNG : '0',
-      "OrderTime": new Date().getTime()
-    }: {
-      "Order": order ? order : '',
-      "Remark": remark ? remark : '',
-      "TNG": TNG ? TNG : '0',
-      "OrderTime": new Date().getTime(),
-      "Amount": payAmount
-    }
+    console.log(level)
+    const data =
+      props.cafe == "Khasiat"
+        ? {
+            Order: order ? order : "",
+            Remark: remark ? remark : "",
+            TNG: TNG ? TNG : "0",
+            OrderTime: new Date().getTime(),
+          }
+        : {
+            Order: order ? order : "",
+            Level: level.value ? level.value : "",
+            Remark: remark ? remark : "",
+            TNG: TNG ? TNG : "0",
+            OrderTime: new Date().getTime(),
+            Amount: payAmount,
+          };
 
     const orderRef = ref(database, "food");
 
     // data[] = _Order
-    const loc = `food/${props.cafe}/` + formatYmd(startDate) + '/'+ name;
+    const loc = `food/${props.cafe}/` + formatYmd(startDate) + "/" + name;
     const _orderRef = ref(database, loc);
     onValue(_orderRef, (snapshot) => {
       const _data = snapshot.val();
-      console.log(data)
-      if (_data){
+      console.log(data);
+      if (_data) {
         setNamExisted(true);
-      }else{
+      } else {
         setNamExisted(false);
       }
     });
 
-    if (nameExisted){
-      _confirm = confirm('Name Existed, are you sure to overwrite the previous record?')
+    if (nameExisted) {
+      _confirm = confirm(
+        "Name Existed, are you sure to overwrite the previous record?"
+      );
     }
 
-    if (orderVal >= 1){
-      if (_confirm){
-        ModalHandler("paymentModal")
+    if (orderVal >= 1) {
+      if (_confirm) {
+        ModalHandler("paymentModal");
         // console.log(data)
-        set(_orderRef, data).then(() => {
-          console.log('Done')
-        }).catch(function(error){
-          console.log(error)
-        });
-    
-        setName('');
-        setOrder('');
-        setRemark('');
-        setTNG('');
+        set(_orderRef, data)
+          .then(() => {
+            console.log("Done");
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
+        setName("");
+        setLevel("");
+        setOrder("");
+        setRemark("");
+        setTNG("");
         setPayAmount(0);
-  
-        document.querySelector('#template-terms').checked = false;
+
+        document.querySelector("#template-terms").checked = false;
         setNamExisted(false);
       }
-    }else{
-      alert('Invalid Order')
-      setorderVal(0)
+    } else {
+      alert("Invalid Order");
+      setorderVal(0);
     }
-    
-    
   };
 
   return (
     <>
       <div id="paymentModal" className="payment-image-modal">
-        <span
-          className="close"
-          onClick={(e) => ModalHandler('paymentModal')}
-        >
+        <span className="close" onClick={(e) => ModalHandler("paymentModal")}>
           &times;
         </span>
         <img
           className="payment-image-modal-content"
           src={props.paymentImage.length == 0 ? "" : props.paymentImage[0]}
-          alt={'TNG Payment'}
+          alt={"TNG Payment"}
         />
         <div id="caption"></div>
       </div>
 
       <div id="enlargeMenu" className="menu-image-modal">
-        <span
-          className="close"
-          onClick={(e) => ModalHandler('enlargeMenu')}
-        >
+        <span className="close" onClick={(e) => ModalHandler("enlargeMenu")}>
           &times;
         </span>
         <img
           className="menu-image-modal-content"
           src={props.menuImage.length == 0 ? "" : props.menuImage[0]}
-          alt={'menu'}
+          alt={"menu"}
         />
         <div id="caption"></div>
       </div>
@@ -295,7 +312,8 @@ export default function Modal(props) {
                   className="row mb-0"
                   id="template-orderform"
                   // name="template-orderform"
-                  onSubmit={submitForm}>
+                  onSubmit={submitForm}
+                >
                   <div className="col-12 form-group mb-10">
                     <label htmlFor="template-order-date">Date:</label>
                     <DatePicker
@@ -327,10 +345,28 @@ export default function Modal(props) {
                       // name="template-order-food"
                       className="form-control input-sm required"
                       value={order}
-                      onChange={(e) =>  cal_Order(e.target.value)}
+                      onChange={(e) => cal_Order(e.target.value)}
                       required
                     />
                   </div>
+                  <div className="col-12 form-group mb-4">
+                    <label htmlFor="template-level">
+                      Level:<font style={{ color: "red" }}>*</font>{" "}
+                    </label>
+                    <Select
+                      className="basic-single"
+                      classNamePrefix="select"
+                      defaultValue={levelOptions[levelOptions.length - 2]}
+                      value={levelOptions[levelOptions.length - 2]}
+                      isLoading={true}
+                      isClearable={true}
+                      isSearchable={true}
+                      name="template-level"
+                      options={levelOptions}
+                      onChange={setLevel}
+                    />
+                  </div>
+
                   <div className="col-12 form-group mb-4">
                     <label htmlFor="template-messages">
                       Remark:<font style={{ color: "red" }}>*</font>{" "}
@@ -344,13 +380,21 @@ export default function Modal(props) {
                       onChange={(e) => setRemark(e.target.value)}
                     />
                   </div>
-                  {props.cafe == 'LaLa' && (<>
-                    <div className="col-12 form-group mb-4">
-                      <div className="contact-checkbox">
-                        <font>Pay Amount: </font><b>RM {payAmount}</b> <i><font style={{'font-size': '12px'}}>(estimated)</font></i>
+                  {props.cafe == "LaLa" && (
+                    <>
+                      <div className="col-12 form-group mb-4">
+                        <div className="contact-checkbox">
+                          <font>Pay Amount: </font>
+                          <b>RM {payAmount}</b>{" "}
+                          <i>
+                            <font style={{ "font-size": "12px" }}>
+                              (estimated)
+                            </font>
+                          </i>
+                        </div>
                       </div>
-                    </div>
-                  </>)}
+                    </>
+                  )}
                   <div className="col-12 form-group mb-4">
                     <div className="contact-checkbox">
                       <input
